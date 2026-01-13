@@ -1,5 +1,6 @@
 import generateNonce from "../utils/nonce.js";
 import hashData from "../utils/hash.js";
+import { query } from "../config/db.js";
 
 //database
 const productInfo = [
@@ -35,46 +36,63 @@ export const allProduct = () => {
 };
 
 //register new product function
-export const registerProduct = (
+export const registerProduct = async (
   productId,
   productName,
   quantity,
   brand,
-  maunfacturedDate,
+  manufacturedDate, // Fixed spelling
   expiryDate
 ) => {
-  const isAlreadyExist = productInfo.find(
-    (product) => product.productId === productId
+  // 1. CHECK IF EXISTS
+  // Fix: Removed quotes around $1 and used correct column name 'product_id'
+  const checkProd = await query(
+    "SELECT * FROM products WHERE product_id = $1",
+    [productId]
   );
 
-  if (isAlreadyExist) {
-    throw new Error("Product already exist");
+  if (checkProd.rows.length > 0) {
+    throw new Error("Product already exists");
   }
 
+  // 2. GENERATE SECURITY DATA
   const currentNonce = generateNonce(8);
   const hash = hashData(productId, currentNonce);
 
-  const newProduct = {
-    productId,
-    productData: {
-      productName,
-      quantity,
-      brand,
-      maunfacturedDate,
-      expiryDate,
-    },
-    nonce: currentNonce,
+  // 3. PREPARE THE JSON DATA
+  // We bundle the details into one object to fit into the 'product_data' column
+  const productDetails = {
+    productName,
+    quantity,
+    brand,
+    manufacturedDate,
+    expiryDate,
   };
 
+  // 4. SAVE TO DATABASE (The Fix)
+  // We insert into only 3 columns: product_id, nonce, and product_data
+  await query(
+    "INSERT INTO products (product_id, nonce, product_data) VALUES ($1, $2, $3)",
+    [
+      productId, // Matches $1
+      currentNonce, // Matches $2
+      productDetails, // Matches $3 (Neon/Postgres automatically stringifies this)
+    ]
+  );
+
+  // 5. UPDATE BLOCKCHAIN (Simulation)
   const blockData = {
     productId,
-    hash: hash, // Store the hash for verification
+    hash: hash,
   };
-  productInfo.push(newProduct);
-
   blockChain.push(blockData);
 
-  return newProduct; // Return only the new product, not the entire array
+  // 6. RETURN SUCCESS
+  return {
+    productId,
+    nonce: currentNonce,
+    productDetails,
+  };
 };
 
 export const verifyProduct = (productId) => {
