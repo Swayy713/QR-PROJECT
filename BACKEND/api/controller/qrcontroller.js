@@ -61,6 +61,7 @@ export const registerNewProduct = (req, res) => {
   }
 };
 
+//controller to verify product
 export const verifyProductId = (req, res) => {
   try {
     const { productId } = req.body;
