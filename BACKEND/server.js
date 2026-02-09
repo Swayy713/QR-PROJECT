@@ -1,7 +1,7 @@
 import { createServer } from "http";
 import app from "./app.js";
 import { config } from "./api/config/config.js";
-import { testConnection } from "./api/config/db.js";
+import { initDb } from "./api/database/productData.js";
 
 const server = createServer(app);
 
@@ -10,7 +10,7 @@ const startServer = async () => {
     console.log("Database connecting....");
 
     // 1. Actually call the test function
-    await testConnection();
+    await initDb();
     console.log("✅ Database connected successfully!");
 
     // 2. Start the server ONLY if DB connects

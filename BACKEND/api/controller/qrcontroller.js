@@ -5,9 +5,9 @@ import {
 } from "../service/qrService.js";
 
 //controller for allproduct
-export const getAllProduct = (req, res) => {
+export const getAllProduct = async (req, res) => {
   try {
-    const products = allProduct();
+    const products = await allProduct();
     res.status(200).json({
       success: true,
       message: "All products",
@@ -23,7 +23,7 @@ export const getAllProduct = (req, res) => {
 };
 
 //controller for register new product
-export const registerNewProduct = (req, res) => {
+export const registerNewProduct = async (req, res) => {
   try {
     const { productId, productData } = req.body;
 
@@ -32,21 +32,13 @@ export const registerNewProduct = (req, res) => {
       return res.status(400).json({
         success: false,
         message:
-          "Missing required fields: productId, productData, and nonce are required",
+          "Missing required fields: productId and productData are required",
       });
     }
 
-    const { productName, quantity, brand, maunfacturedDate, expiryDate } =
-      productData;
+    const { productName, quantity, brand } = productData;
 
-    const product = registerProduct(
-      productId,
-      productName,
-      quantity,
-      brand,
-      maunfacturedDate,
-      expiryDate
-    );
+    const product = await registerProduct(productId, productName, quantity, brand);
     res.status(201).json({
       success: true,
       message: "Product registered successfully",
@@ -62,10 +54,10 @@ export const registerNewProduct = (req, res) => {
 };
 
 //controller to verify product
-export const verifyProductId = (req, res) => {
+export const verifyProductId = async (req, res) => {
   try {
     const { productId } = req.body;
-    const product = verifyProduct(productId);
+    const product = await verifyProduct(productId);
     res.status(200).json({
       success: true,
       message: "Product verified successfully",
