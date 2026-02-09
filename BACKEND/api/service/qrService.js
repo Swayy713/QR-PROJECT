@@ -2,37 +2,22 @@ import generateNonce from "../utils/nonce.js";
 import hashData from "../utils/hash.js";
 import { query } from "../config/db.js";
 
-//database
-const productInfo = [
-  {
-    productId: "qjeyr1123jd",
-    productData: {
-      productName: "Gala",
-      quantity: "100g",
-      brand: "Uac food",
-      maunfacturedDate: "1-1-2025",
-      expiryDate: "1-3-2025",
-    },
-    nonce: "1wert45",
-  },
-  {
-    productId: "qjeyr1123kd",
-    productData: {
-      productName: "Malt",
-      quantity: "100g",
-      brand: "Uac Drink",
-      maunfacturedDate: "1-1-2025",
-      expiryDate: "1-3-2025",
-    },
-    nonce: "1werv45",
-  },
-];
-
-const blockChain = [];
-
 //get all product function
-export const allProduct = () => {
-  return [productInfo, blockChain];
+export const allProduct = async () => {
+  try {
+    // Fetch all rows
+    const result = await query("SELECT * FROM products");
+
+    // Convert the 'product_data' string back into a real JSON object for the frontend
+    const formattedProducts = result.rows.map((row) => ({
+      ...row,
+      product_data: JSON.parse(row.product_data),
+    }));
+
+    return formattedProducts;
+  } catch (error) {
+    throw new Error("Failed to fetch products: " + error.message);
+  }
 };
 
 //register new product function
@@ -41,101 +26,97 @@ export const registerProduct = async (
   productName,
   quantity,
   brand,
-  manufacturedDate, // Fixed spelling
-  expiryDate
 ) => {
-  // 1. CHECK IF EXISTS
-  // Fix: Removed quotes around $1 and used correct column name 'product_id'
-  const checkProd = await query(
-    "SELECT * FROM products WHERE product_id = $1",
-    [productId]
-  );
+  // A. Check if exists
+  const checkProd = await query("SELECT * FROM products WHERE product_id = ?", [
+    productId,
+  ]);
 
   if (checkProd.rows.length > 0) {
     throw new Error("Product already exists");
   }
 
-  // 2. GENERATE SECURITY DATA
+  // B. Generate Security Data
   const currentNonce = generateNonce(8);
   const hash = hashData(productId, currentNonce);
 
-  // 3. PREPARE THE JSON DATA
-  // We bundle the details into one object to fit into the 'product_data' column
-  const productDetails = {
+  // C. Prepare Data (Stringify for SQLite)
+  const productDetails = JSON.stringify({
     productName,
     quantity,
     brand,
-    manufacturedDate,
-    expiryDate,
-  };
+  });
 
-  // 4. SAVE TO DATABASE (The Fix)
-  // We insert into only 3 columns: product_id, nonce, and product_data
+  // D. Save to Product DB
   await query(
-    "INSERT INTO products (product_id, nonce, product_data) VALUES ($1, $2, $3)",
-    [
-      productId, // Matches $1
-      currentNonce, // Matches $2
-      productDetails, // Matches $3 (Neon/Postgres automatically stringifies this)
-    ]
+    "INSERT INTO products (product_id, nonce, product_data) VALUES (?, ?, ?)",
+    [productId, currentNonce, productDetails],
   );
 
-  // 5. UPDATE BLOCKCHAIN (Simulation)
-  const blockData = {
+  // E. Save to Mock Blockchain DB (Instead of array push)
+  await query("INSERT INTO mock_blockchain (product_id, hash) VALUES (?, ?)", [
     productId,
-    hash: hash,
-  };
-  blockChain.push(blockData);
+    hash,
+  ]);
 
-  // 6. RETURN SUCCESS
   return {
     productId,
     nonce: currentNonce,
-    productDetails,
+    hash, // Return this so you can verify it immediately in Postman
+    productDetails: JSON.parse(productDetails),
   };
 };
 
-export const verifyProduct = (productId) => {
-  const foundProduct = productInfo.find(
-    (product) => product.productId === productId
+//Verify product
+export const verifyProduct = async (productId) => {
+  // A. Get product id from database to get nonce
+  const productRes = await query(
+    "SELECT * FROM products WHERE product_id = ?",
+    [productId],
   );
 
-  if (!foundProduct) {
-    throw new Error("Product is not exist");
+  if (productRes.rows.length === 0) {
+    throw new Error("Product does not exist in Database");
   }
 
+  const foundProduct = productRes.rows[0];
   const dbNonce = foundProduct.nonce;
+
+  // Re-calculate hash using local data
   const localHash = hashData(productId, dbNonce);
 
-  const blockIndex = blockChain.findIndex(
-    (block) => block.productId === productId
+  // B. Get Blockchain Data
+  const chainRes = await query(
+    "SELECT * FROM mock_blockchain WHERE product_id = ?",
+    [productId],
   );
 
-  if (blockIndex === -1) {
-    throw new Error("Product not found on Blockchain");
+  if (chainRes.rows.length === 0) {
+    throw new Error("Product not found on Blockchain (Fake)");
   }
 
-  const blockData = blockChain[blockIndex];
+  const blockData = chainRes.rows[0];
 
-  // 4. THE COMPARISON (The Moment of Truth)
+  // C. COMPARE
   if (blockData.hash !== localHash) {
-    // If they don't match, it means the blockchain has been updated already!
-    throw new Error("Product Verification Failed! (Already Scanned or Fake)");
+    throw new Error("Product Verification Failed! ( Already Scanned?)");
   }
 
+  // generate a new random hash and update the 'blockchain' table
   const newRandomNonce = generateNonce(8);
   const newRandomHash = hashData(productId, newRandomNonce);
 
-  // 6. UPDATE THE BLOCKCHAIN ONLY
-  blockChain[blockIndex] = {
+  await query("UPDATE mock_blockchain SET hash = ? WHERE product_id = ?", [
+    newRandomHash,
     productId,
-    hash: newRandomHash,
-  };
+  ]);
 
   return {
     status: "Verified",
-    message:
-      "Product is Authentic. It has now been invalidated for future scans.",
-    product: foundProduct,
+    message: "Product is Authentic. It has now been invalidated.",
+    product: {
+      ...foundProduct,
+      product_data: JSON.parse(foundProduct.product_data),
+    },
   };
 };
