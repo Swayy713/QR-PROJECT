@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authenticity Verification</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 50px;
+            color: #333;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .btn-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .instruction {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+        .btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            color: white;
+        }
+        .btn-manufacturer {
+            background-color: #007bff;
+        }
+        .btn-manufacturer:hover {
+            background-color: #0056b3;
+        }
+        .btn-consumer {
+            background-color: #28a745;
+        }
+        .btn-consumer:hover {
+            background-color: #1e7e34;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Authenticity Verification</h1>
+
+    <div class="button-container">
+        <div class="btn-wrapper">
+            <p class="instruction">Click here if you are a Manufacturer</p>
+            <a href="manufacturer.html" class="btn btn-manufacturer">Manufacturer Page</a>
+        </div>
+
+        <div class="btn-wrapper">
+            <p class="instruction">Click here if you are a Consumer</p>
+            <a href="consumer.html" class="btn btn-consumer">Consumer Page</a>
+        </div>
+    </div>
+
+</body>
+</html>

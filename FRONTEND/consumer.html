@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Verification</title>
+    <link rel="stylesheet" href="consumer.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Product Authenticity Verification</h1>
+
+    <!-- Verify Button -->
+    <button id="startVerifyBtn" class="verify-btn">
+        Verify Product
+    </button>
+
+    <!-- QR Scanner Section -->
+    <div id="scannerSection" class="hidden">
+        <h2>Scan Product QR Code</h2>
+        <div id="reader"></div>
+    </div>
+
+    <!-- Result Section -->
+    <div id="resultSection" class="hidden">
+        <h2 id="verificationStatus"></h2>
+
+        <div class="product-details">
+            <p><strong>Name:</strong> <span id="productName"></span></p>
+            <p><strong>Brand:</strong> <span id="productBrand"></span></p>
+            <p><strong>Category:</strong> <span id="productCategory"></span></p>
+            <p><strong>Quantity:</strong> <span id="productQuantity"></span></p>
+        </div>
+    </div>
+</div>
+
+<!-- QR Scanner Library -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="consumer.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manufacturer Dashboard</title>
+    <link rel="stylesheet" href="manufacturer.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Manufacturer Product Registration</h1>
+
+        <form id="productForm">
+            <div class="form-group">
+                <label>Product ID</label>
+                <input type="text" id="productID" required>
+            </div>
+
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" id="productName" required>
+            </div>
+
+            <div class="form-group">
+                <label>Brand</label>
+                <input type="text" id="brand" required>
+            </div>
+
+            <div class="form-group">
+                <label>Quantity</label>
+                <input type="number" id="quantity" required>
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <input type="text" id="category" required>
+            </div>
+
+            <button type="submit">Register Product</button>
+        </form>
+
+        <div id="message"></div>
+
+        <div id="qrSection">
+            <h3>Generated QR Code</h3>
+            <div id="qrCode"></div>
+        </div>
+
+    </div>
+
+</body>
+</html>
