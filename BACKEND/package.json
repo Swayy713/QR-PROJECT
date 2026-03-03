@@ -13,11 +13,11 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "better-sqlite3": "^12.6.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "ethers": "^6.16.0",
     "express": "^5.2.1",
-    "nodemon": "^3.1.11",
-    "sqlite3": "^5.1.7"
+    "nodemon": "^3.1.11"
   }
 }

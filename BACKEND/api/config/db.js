@@ -1,30 +1,26 @@
-import sqlite3 from "sqlite3";
+import Database from "better-sqlite3";
 
-const db = new sqlite3.Database(
-  "./product.db",
-  sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
-  (err) => {
-    if (err) return console.error(err.message);
-    console.log("Connected to the SQLite database.");
-  },
-);
+const db = new Database("./product.db");
+console.log("Connected to the SQLite database.");
 
 export const query = (text, params = []) => {
   return new Promise((resolve, reject) => {
-    // If the query is a SELECT, use db.all() (returns data)
-    if (text.trim().toUpperCase().startsWith("SELECT")) {
-      db.all(text, params, (err, rows) => {
-        if (err) return reject(err);
+    try {
+      // If the query is a SELECT, use stmt.all() (returns data)
+      if (text.trim().toUpperCase().startsWith("SELECT")) {
+        const stmt = db.prepare(text);
+        const rows = stmt.all(...params);
         resolve({ rows }); // Return in { rows } format to match your old code
-      });
-    }
-    // If the query is INSERT/UPDATE, use db.run() (returns nothing)
-    else {
-      db.run(text, params, function (err) {
-        if (err) return reject(err);
-        // 'this' contains info like lastID and changes
-        resolve({ rows: [], lastID: this.lastID, changes: this.changes });
-      });
+      }
+      // If the query is INSERT/UPDATE, use stmt.run() (returns nothing)
+      else {
+        const stmt = db.prepare(text);
+        const info = stmt.run(...params);
+        // 'info' contains info like lastInsertRowid and changes
+        resolve({ rows: [], lastID: info.lastInsertRowid, changes: info.changes });
+      }
+    } catch (err) {
+      reject(err);
     }
   });
 };
