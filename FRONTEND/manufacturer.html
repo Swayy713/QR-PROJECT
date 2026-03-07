@@ -3,51 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manufacturer Dashboard</title>
+    <title>Manufacturer Portal | AuthChain</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="manufacturer.css">
 </head>
 <body>
 
     <div class="container">
-        <h1>Manufacturer Product Registration</h1>
+        <div class="header">
+            <h1>Register Product</h1>
+            <p class="subtitle">Anchor a new item to the blockchain</p>
+        </div>
 
-        <form id="productForm">
+        <form id="productForm" onsubmit="return false;">
             <div class="form-group">
-                <label>Product ID</label>
-                <input type="text" id="productID" required>
+                <label>Product ID (SKU / Serial)</label>
+                <input type="text" id="productID" placeholder="e.g. SN-99824" required>
             </div>
 
             <div class="form-group">
                 <label>Product Name</label>
-                <input type="text" id="productName" required>
+                <input type="text" id="productName" placeholder="e.g. Quantum Processor X9" required>
             </div>
 
             <div class="form-group">
                 <label>Brand</label>
-                <input type="text" id="brand" required>
+                <input type="text" id="brand" placeholder="e.g. AuthCorp" required>
             </div>
 
             <div class="form-group">
                 <label>Quantity</label>
-                <input type="number" id="quantity" required>
+                <input type="text" id="quantity" placeholder="1" required>
             </div>
 
             <div class="form-group">
                 <label>Category</label>
-                <input type="text" id="category" required>
+                <input type="text" id="category" placeholder="e.g. Electronics" required>
             </div>
 
-            <button type="submit">Register Product</button>
+            <button type="button" id="registerBtn" class="btn-submit">Register on Blockchain</button>
         </form>
 
         <div id="message"></div>
 
-        <div id="qrSection">
-            <h3>Generated QR Code</h3>
-            <div id="qrCode"></div>
-        </div>
-
+        <a href="index.html" class="back-link">← Return to Portal</a>
     </div>
+
+    <script src="manufacturer.js"></script>
 
 </body>
 </html>

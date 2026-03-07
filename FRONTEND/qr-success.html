@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Ready | AuthChain</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif;}
+
+        body {
+            background-color: #0b0f19;
+            background-image: radial-gradient(circle at 50% 0%, rgba(56, 122, 255, 0.15) 0%, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(20, 26, 38, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 48px 40px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+        }
+
+        .success-badge {
+            width: 64px;
+            height: 64px;
+            background: rgba(0, 201, 167, 0.1);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 0 0 8px rgba(0, 201, 167, 0.05);
+        }
+
+        .success-badge svg {
+            width: 32px;
+            height: 32px;
+            stroke: #00c9a7;
+            stroke-width: 2.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .product-id {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 32px;
+            word-break: break-all;
+            background: rgba(0,0,0,0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .qr-wrapper {
+            background: white;
+            display: inline-block;
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 30px rgba(255,255,255,0.05);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #00c9a7, #00997e);
+            color: white;
+            box-shadow: 0 4px 14px rgba(0, 201, 167, 0.25);
+        }
+
+        .btn-download:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0, 201, 167, 0.35); }
+
+        .btn-new {
+            background: rgba(255,255,255,0.04);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-new:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+
+        .btn-home {
+            background: transparent;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .btn-home:hover { color: #fff; }
+
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="success-badge">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    </div>
+    <h1>Anchored to Blockchain</h1>
+    <p class="product-id" id="productIdDisplay"></p>
+
+    <div class="qr-wrapper">
+        <canvas id="qrCanvas"></canvas>
+    </div>
+
+    <button class="btn btn-download" id="downloadBtn">Download Secure Tag (QR)</button>
+    <button class="btn btn-new" onclick="window.location.href='manufacturer.html'">Register Another Item</button>
+    <button class="btn btn-home" onclick="window.location.href='index.html'">← Back to Portal</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get("productId");
+
+    if (!productId) {
+        window.location.href = "manufacturer.html";
+    } else {
+        document.getElementById("productIdDisplay").textContent = "ID: " + productId;
+
+        const qr = new QRious({
+            element: document.getElementById("qrCanvas"),
+            value: productId,
+            size: 220,
+            level: "H",
+            background: "white",
+            foreground: "black",
+        });
+
+        document.getElementById("downloadBtn").addEventListener("click", () => {
+            const canvas = document.getElementById("qrCanvas");
+            const link = document.createElement("a");
+            link.download = "AuthChain-SecureTag-" + Date.now() + ".png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        });
+    }
+</script>
+
+</body>
+</html>
