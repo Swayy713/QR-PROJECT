@@ -52,14 +52,14 @@ export const registerProduct = async (
     category,
   });
 
-  // D. Save product + nonce to SQLite
+  // D. Register on blockchain FIRST — if this fails, nothing is saved to DB
+  await registerOnChain(productId, hash);
+
+  // E. Only save to SQLite after blockchain confirms
   await query(
     "INSERT INTO products (product_id, nonce, product_data) VALUES (?, ?, ?)",
     [productId, currentNonce, productDetails],
   );
-
-  // E. Register hash on the real Sepolia blockchain
-  await registerOnChain(productId, hash);
 
   return {
     productId,
@@ -92,7 +92,7 @@ export const verifyProduct = async (productId) => {
 
   if (!isValid) {
     throw new Error(
-      "Product Verification Failed! (Already Scanned or Counterfeit)",
+      "Product Verification Failed! (Already Used or Counterfeit)",
     );
   }
 

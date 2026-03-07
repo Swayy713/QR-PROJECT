@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Verification</title>
     <link rel="stylesheet" href="consumer.css">
 </head>
@@ -9,32 +10,51 @@
 
 <div class="container">
     <h1>Product Authenticity Verification</h1>
+    <p class="subtitle">Verify your product is genuine by scanning or uploading its QR code</p>
 
-    <!-- Verify Button -->
-    <button id="startVerifyBtn" class="verify-btn">
-        Verify Product
-    </button>
-
-    <!-- QR Scanner Section -->
-    <div id="scannerSection" class="hidden">
-        <h2>Scan Product QR Code</h2>
-        <div id="reader"></div>
+    <!-- Mode Toggle -->
+    <div class="mode-toggle">
+        <button class="mode-btn active" id="btnCamera" onclick="switchMode('camera')">
+            📷 Scan with Camera
+        </button>
+        <button class="mode-btn" id="btnUpload" onclick="switchMode('upload')">
+            📁 Upload QR Image
+        </button>
     </div>
+
+    <!-- Camera Section -->
+    <div id="cameraSection">
+        <div id="reader"></div>
+        <button class="verify-btn" id="startCameraBtn">Start Camera</button>
+        <button class="verify-btn secondary hidden" id="stopCameraBtn">Stop Camera</button>
+    </div>
+
+    <!-- Upload Section -->
+    <div id="uploadSection" class="hidden">
+        <label class="upload-label" for="qrFileInput">
+            <span id="uploadLabelText">📂 Click to choose a QR image</span>
+            <input type="file" id="qrFileInput" accept="image/*">
+        </label>
+        <button class="verify-btn" id="verifyUploadBtn">Verify QR Code</button>
+    </div>
+
+    <!-- Status -->
+    <p id="statusMsg" class="status-msg"></p>
 
     <!-- Result Section -->
     <div id="resultSection" class="hidden">
         <h2 id="verificationStatus"></h2>
-
-        <div class="product-details">
+        <div class="product-details" id="productDetails">
             <p><strong>Name:</strong> <span id="productName"></span></p>
             <p><strong>Brand:</strong> <span id="productBrand"></span></p>
             <p><strong>Category:</strong> <span id="productCategory"></span></p>
             <p><strong>Quantity:</strong> <span id="productQuantity"></span></p>
         </div>
     </div>
+
+    <button class="reset-btn hidden" id="resetBtn" onclick="resetPage()">🔄 Verify Another Product</button>
 </div>
 
-<!-- QR Scanner Library -->
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script src="consumer.js"></script>
 

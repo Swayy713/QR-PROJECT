@@ -11,7 +11,7 @@
     <div class="container">
         <h1>Manufacturer Product Registration</h1>
 
-        <form id="productForm">
+        <form id="productForm" onsubmit="return false;">
             <div class="form-group">
                 <label>Product ID</label>
                 <input type="text" id="productID" required>
@@ -37,17 +37,13 @@
                 <input type="text" id="category" required>
             </div>
 
-            <button type="submit">Register Product</button>
+            <button type="button" id="registerBtn">Register Product</button>
         </form>
 
         <div id="message"></div>
-
-        <div id="qrSection">
-            <h3>Generated QR Code</h3>
-            <div id="qrCode"></div>
-        </div>
-
     </div>
+
+    <script src="manufacturer.js"></script>
 
 </body>
 </html>
