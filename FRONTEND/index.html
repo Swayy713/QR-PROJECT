@@ -3,74 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authenticity Verification</title>
+    <title>AuthChain | Product Authenticity System</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
         body {
+            background-color: #0b0f19;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 201, 167, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(56, 122, 255, 0.08) 0%, transparent 50%);
+            color: #ffffff;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            padding: 40px 20px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .container {
             text-align: center;
+            max-width: 600px;
+            padding: 40px;
+            z-index: 10;
         }
-        h1 {
-            margin-bottom: 50px;
-            color: #333;
-        }
-        .button-container {
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 24px;
             display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-        .btn-wrapper {
-            display: flex;
-            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            gap: 12px;
         }
-        .instruction {
-            margin-bottom: 10px;
-            font-size: 16px;
-            color: #555;
-        }
-        .btn {
-            padding: 15px 30px;
-            font-size: 18px;
-            border: none;
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #00c9a7, #387aff);
             border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 4px 20px rgba(0, 201, 167, 0.3);
+        }
+
+        .logo-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: white;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #ffffff, #a0aec0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #94a3b8;
+            margin-bottom: 48px;
+            font-weight: 300;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            width: 100%;
+        }
+
+        .portal-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 32px 24px;
             text-decoration: none;
             color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        .btn-manufacturer {
-            background-color: #007bff;
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .btn-manufacturer:hover {
-            background-color: #0056b3;
+
+        .portal-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
         }
-        .btn-consumer {
-            background-color: #28a745;
+
+        .portal-card:hover::before {
+            opacity: 1;
         }
-        .btn-consumer:hover {
-            background-color: #1e7e34;
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            display: grid;
+            place-items: center;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .portal-card:hover .card-icon {
+            transform: scale(1.1);
+        }
+
+        .card-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .mfg-card .card-icon svg { stroke: #387aff; }
+        .cons-card .card-icon svg { stroke: #00c9a7; }
+
+        .mfg-card:hover { border-color: rgba(56, 122, 255, 0.4); box-shadow: 0 12px 40px rgba(56, 122, 255, 0.15); }
+        .cons-card:hover { border-color: rgba(0, 201, 167, 0.4); box-shadow: 0 12px 40px rgba(0, 201, 167, 0.15); }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .portal-card p {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        @media (max-width: 600px) {
+            .cards-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 30px; }
+            .container { padding: 24px; }
+            
         }
     </style>
 </head>
 <body>
 
-    <h1>Authenticity Verification</h1>
-
-    <div class="button-container">
-        <div class="btn-wrapper">
-            <p class="instruction">Click here if you are a Manufacturer</p>
-            <a href="manufacturer.html" class="btn btn-manufacturer">Manufacturer Page</a>
+    <div class="container">
+        <div class="logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+            AuthChain
         </div>
 
-        <div class="btn-wrapper">
-            <p class="instruction">Click here if you are a Consumer</p>
-            <a href="consumer.html" class="btn btn-consumer">Consumer Page</a>
+        <h1>Immutable Product Verification</h1>
+        <p class="subtitle">Securely register products on the blockchain and allow consumers to cryptographically verify authenticity with a single scan.</p>
+
+        <div class="cards-grid">
+            <a href="manufacturer.html" class="portal-card mfg-card">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                </div>
+                <h2>Manufacturer</h2>
+                <p>Register new inventory, issue secure QR tags, and anchor products to the blockchain.</p>
+            </a>
+
+            <a href="consumer.html" class="portal-card cons-card">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4z"></path><path d="M14 4h6v6h-6z"></path><path d="M4 14h6v6H4z"></path><path d="M14 14h6v6h-6z"></path></svg>
+                </div>
+                <h2>Consumer</h2>
+                <p>Scan a product QR code to instantly verify authenticity and view supply chain details.</p>
+            </a>
         </div>
     </div>
 
