@@ -17,7 +17,7 @@ export const initDb = () => {
 
       // SQLite allows executing multiple statements if using db.exec synchronously
       db.exec(sql);
-      console.log("✅ Tables 'products' and 'mock_blockchain' are ready.");
+      console.log("✅ 'products' table is ready.");
       resolve();
     } catch (err) {
       console.error("❌ Error creating tables:", err.message);

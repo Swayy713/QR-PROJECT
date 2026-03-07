@@ -51,10 +51,19 @@ export const registerNewProduct = async (req, res) => {
       data: product,
     });
   } catch (error) {
+    let cleanMessage = error.message || "Internal Server Error";
+    
+    // Parse ethers.js revert string to extract just the reason
+    if (cleanMessage.includes("execution reverted:")) {
+      const match = cleanMessage.match(/execution reverted: \\?"?(.*?)\\?"?(?:\s|\(|$)/);
+      if (match && match[1]) {
+        cleanMessage = match[1];
+      }
+    }
+
     res.status(500).json({
       success: false,
-      message: error.message || "Internal Server Error",
-      error: error.message,
+      message: cleanMessage,
     });
   }
 };
@@ -70,10 +79,19 @@ export const verifyProductId = async (req, res) => {
       data: product,
     });
   } catch (error) {
+    let cleanMessage = error.message || "Internal Server Error";
+    
+    // Parse ethers.js revert string to extract just the reason
+    if (cleanMessage.includes("execution reverted:")) {
+      const match = cleanMessage.match(/execution reverted: \\?"?(.*?)\\?"?(?:\s|\(|$)/);
+      if (match && match[1]) {
+        cleanMessage = match[1];
+      }
+    }
+
     res.status(500).json({
       success: false,
-      message: error.message || "Internal Server Error",
-      error: error.message,
+      message: cleanMessage,
     });
   }
 };

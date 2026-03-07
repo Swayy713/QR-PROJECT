@@ -21,7 +21,18 @@ export const registerOnChain = async (productId, hash) => {
     await tx.wait(); // Wait for tx to be mined
     console.log(`✅ [Blockchain] Product "${productId}" registered. Tx: ${tx.hash}`);
   } catch (error) {
-    throw new Error("Blockchain registerProduct failed: " + error.message);
+    // Parse ethers.js revert errors into clean human-readable messages
+    let cleanMessage = "Failed to register product on blockchain.";
+    
+    if (error.code === "CALL_EXCEPTION" && error.reason) {
+      cleanMessage = error.reason; // e.g., "Product already registered"
+    } else if (error.message && error.message.includes("Product already registered")) {
+      cleanMessage = "Product is already registered on the blockchain.";
+    } else if (error.info && error.info.error && error.info.error.message) {
+      cleanMessage = error.info.error.message;
+    }
+
+    throw new Error(cleanMessage);
   }
 };
 
@@ -38,7 +49,17 @@ export const verifyOnChain = async (productId, hash) => {
     console.log(`🔍 [Blockchain] Verify "${productId}": ${isValid}`);
     return isValid;
   } catch (error) {
-    throw new Error("Blockchain verifyProduct failed: " + error.message);
+    let cleanMessage = "Failed to verify product on blockchain.";
+    
+    if (error.code === "CALL_EXCEPTION" && error.reason) {
+      cleanMessage = error.reason;
+    } else if (error.info && error.info.error && error.info.error.message) {
+      cleanMessage = error.info.error.message;
+    } else if (error.message) {
+      cleanMessage = error.message;
+    }
+
+    throw new Error(cleanMessage);
   }
 };
 
@@ -54,6 +75,16 @@ export const updateHashOnChain = async (productId, junkHash) => {
     await tx.wait();
     console.log(`🔒 [Blockchain] Hash for "${productId}" rotated. Tx: ${tx.hash}`);
   } catch (error) {
-    throw new Error("Blockchain updateProductHash failed: " + error.message);
+    let cleanMessage = "Failed to update product hash on blockchain.";
+    
+    if (error.code === "CALL_EXCEPTION" && error.reason) {
+      cleanMessage = error.reason;
+    } else if (error.info && error.info.error && error.info.error.message) {
+      cleanMessage = error.info.error.message;
+    } else if (error.message) {
+      cleanMessage = error.message;
+    }
+
+    throw new Error(cleanMessage);
   }
 };

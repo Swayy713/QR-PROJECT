@@ -28,7 +28,7 @@ document.getElementById("stopCameraBtn").addEventListener("click", stopCamera);
 
 function startCamera() {
   resetResult();
-  setStatus("Starting camera... 📷", "#aaa");
+  setStatus("Starting camera... <span class='spinner dark' style='margin-left:8px; width:16px; height:16px; border-width:2px;'></span>", "#aaa");
 
   html5QrCode = new Html5Qrcode("reader");
   html5QrCode
@@ -48,7 +48,20 @@ function startCamera() {
       setStatus("Point camera at a product QR code", "#aaa");
     })
     .catch((err) => {
-      setStatus("❌ Could not access camera: " + err, "#ff6b6b");
+      let cleanErr = "Could not access the camera.";
+      const errStr = String(err).toLowerCase();
+      
+      if (errStr.includes("notallowederror") || errStr.includes("permission denied")) {
+        cleanErr = "Camera access denied. Please allow camera permissions in your browser.";
+      } else if (errStr.includes("notfounderror") || errStr.includes("device not found")) {
+        cleanErr = "No connected camera found on this device.";
+      } else if (errStr.includes("notsupportederror") || errStr.includes("secure context")) {
+        cleanErr = "Camera access requires a secure connection (HTTPS) or localhost.";
+      } else if (errStr.includes("notreadableerror") || errStr.includes("already in use")) {
+        cleanErr = "Camera is already in use by another application.";
+      }
+
+      setStatus(`❌ ${cleanErr}`, "#ff6b6b");
     });
 }
 
@@ -80,7 +93,7 @@ document.getElementById("verifyUploadBtn").addEventListener("click", async () =>
     return;
   }
 
-  setStatus("Reading QR code from image... 🔍", "#aaa");
+  setStatus("Reading QR code... <span class='spinner dark' style='margin-left:8px; width:16px; height:16px; border-width:2px;'></span>", "#aaa");
 
   try {
     const scanner = new Html5Qrcode("reader"); // uses a hidden element
@@ -93,7 +106,7 @@ document.getElementById("verifyUploadBtn").addEventListener("click", async () =>
 
 // ─── Verify API Call ──────────────────────────────────────────
 async function verifyProduct(productId) {
-  setStatus(`Verifying "${productId}" on blockchain... ⏳`, "#aaa");
+  setStatus(`Verifying on blockchain... <span class='spinner dark' style='margin-left:8px; width:16px; height:16px; border-width:2px;'></span>`, "#aaa");
 
   try {
     const res = await fetch(`${API_BASE}/verify`, {
@@ -122,12 +135,27 @@ function showResult(isValid, message, productData) {
 
   const resultSection = document.getElementById("resultSection");
   const statusEl = document.getElementById("verificationStatus");
+  const badgeEl = document.getElementById("resultBadge");
+  const iconEl = document.getElementById("resultIcon");
 
   resultSection.classList.remove("hidden");
   document.getElementById("resetBtn").classList.remove("hidden");
 
   statusEl.textContent = message;
-  statusEl.style.color = isValid ? "#00c9a7" : "#ff6b6b";
+  
+  if (isValid) {
+    statusEl.style.color = "#00c9a7";
+    badgeEl.style.background = "rgba(0, 201, 167, 0.1)";
+    badgeEl.style.boxShadow = "0 0 0 8px rgba(0, 201, 167, 0.05)";
+    iconEl.style.stroke = "#00c9a7";
+    iconEl.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
+  } else {
+    statusEl.style.color = "#ff6b6b";
+    badgeEl.style.background = "rgba(255, 107, 107, 0.1)";
+    badgeEl.style.boxShadow = "0 0 0 8px rgba(255, 107, 107, 0.05)";
+    iconEl.style.stroke = "#ff6b6b";
+    iconEl.innerHTML = '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>';
+  }
 
   const detailsEl = document.getElementById("productDetails");
   if (isValid && productData) {
@@ -147,9 +175,10 @@ function resetResult() {
   setStatus("", "");
 }
 
-function setStatus(msg, color) {
+function setStatus(msgHTML, color) {
   const el = document.getElementById("statusMsg");
-  el.textContent = msg;
+  // Using innerHTML so we can inject the <span> spinner
+  el.innerHTML = msgHTML;
   el.style.color = color;
 }
 

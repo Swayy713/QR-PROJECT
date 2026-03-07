@@ -3,39 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Verification</title>
+    <title>Verify Product | AuthChain</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="consumer.css">
 </head>
 <body>
 
 <div class="container">
-    <h1>Product Authenticity Verification</h1>
-    <p class="subtitle">Verify your product is genuine by scanning or uploading its QR code</p>
+    <div class="header">
+        <h1>Verify Authenticity</h1>
+        <p class="subtitle">Scan or upload an AuthChain secure tag</p>
+    </div>
 
     <!-- Mode Toggle -->
     <div class="mode-toggle">
         <button class="mode-btn active" id="btnCamera" onclick="switchMode('camera')">
-            📷 Scan with Camera
+            <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            Camera
         </button>
         <button class="mode-btn" id="btnUpload" onclick="switchMode('upload')">
-            📁 Upload QR Image
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Upload
         </button>
     </div>
 
     <!-- Camera Section -->
     <div id="cameraSection">
         <div id="reader"></div>
-        <button class="verify-btn" id="startCameraBtn">Start Camera</button>
-        <button class="verify-btn secondary hidden" id="stopCameraBtn">Stop Camera</button>
+        <button class="verify-btn" id="startCameraBtn">Start Scanner</button>
+        <button class="verify-btn secondary hidden" id="stopCameraBtn">Stop Scanner</button>
     </div>
 
     <!-- Upload Section -->
     <div id="uploadSection" class="hidden">
         <label class="upload-label" for="qrFileInput">
-            <span id="uploadLabelText">📂 Click to choose a QR image</span>
+            <div class="upload-icon">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            </div>
+            <span id="uploadLabelText">Browse for QR image</span>
             <input type="file" id="qrFileInput" accept="image/*">
         </label>
-        <button class="verify-btn" id="verifyUploadBtn">Verify QR Code</button>
+        <button class="verify-btn" id="verifyUploadBtn">Verify Image</button>
     </div>
 
     <!-- Status -->
@@ -43,16 +52,33 @@
 
     <!-- Result Section -->
     <div id="resultSection" class="hidden">
+        <div class="result-badge" id="resultBadge">
+            <svg viewBox="0 0 24 24" id="resultIcon"></svg>
+        </div>
         <h2 id="verificationStatus"></h2>
+        
         <div class="product-details" id="productDetails">
-            <p><strong>Name:</strong> <span id="productName"></span></p>
-            <p><strong>Brand:</strong> <span id="productBrand"></span></p>
-            <p><strong>Category:</strong> <span id="productCategory"></span></p>
-            <p><strong>Quantity:</strong> <span id="productQuantity"></span></p>
+            <div class="detail-row">
+                <span class="detail-label">Product Name</span>
+                <span class="detail-value" id="productName"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Brand</span>
+                <span class="detail-value" id="productBrand"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Category</span>
+                <span class="detail-value" id="productCategory"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Batch Qty</span>
+                <span class="detail-value" id="productQuantity"></span>
+            </div>
         </div>
     </div>
 
-    <button class="reset-btn hidden" id="resetBtn" onclick="resetPage()">🔄 Verify Another Product</button>
+    <button class="reset-btn hidden" id="resetBtn" onclick="resetPage()">Verify Another Item</button>
+    <a href="index.html" class="back-link">← Return to Portal</a>
 </div>
 
 <script src="https://unpkg.com/html5-qrcode"></script>

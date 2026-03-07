@@ -15,9 +15,12 @@ registerBtn.addEventListener("click", async () => {
     return;
   }
 
-  showMessage("Registering product on blockchain... ⏳", "info");
+  // Clear any existing message
+  showMessage("", "");
+  
   registerBtn.disabled = true;
-  registerBtn.textContent = "Registering...";
+  // Inject spinner into button
+  registerBtn.innerHTML = '<span class="spinner"></span> Registering...';
 
   try {
     const res = await fetch(`${API_BASE}/register`, {
@@ -41,7 +44,7 @@ registerBtn.addEventListener("click", async () => {
   } catch (err) {
     showMessage(`❌ Error: ${err.message}`, "error");
     registerBtn.disabled = false;
-    registerBtn.textContent = "Register Product";
+    registerBtn.textContent = "Register on Blockchain";
   }
 });
 
