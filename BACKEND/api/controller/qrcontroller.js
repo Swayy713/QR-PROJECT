@@ -36,9 +36,15 @@ export const registerNewProduct = async (req, res) => {
       });
     }
 
-    const { productName, quantity, brand } = productData;
+    const { productName, quantity, brand, category } = productData;
 
-    const product = await registerProduct(productId, productName, quantity, brand);
+    const product = await registerProduct(
+      productId,
+      productName,
+      quantity,
+      brand,
+      category,
+    );
     res.status(201).json({
       success: true,
       message: "Product registered successfully",

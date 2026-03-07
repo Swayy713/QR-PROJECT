@@ -13,12 +13,6 @@ export const initDb = () => {
           product_data TEXT NOT NULL, -- Stores JSON string
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
-
-        CREATE TABLE IF NOT EXISTS mock_blockchain (
-          product_id TEXT PRIMARY KEY,
-          hash TEXT NOT NULL,
-          FOREIGN KEY(product_id) REFERENCES products(product_id)
-        );
       `;
 
       // SQLite allows executing multiple statements if using db.exec synchronously
