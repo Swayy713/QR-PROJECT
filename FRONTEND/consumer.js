@@ -163,7 +163,7 @@ function showResult(isValid, message, productData) {
     document.getElementById("productName").textContent = productData.productName || "—";
     document.getElementById("productBrand").textContent = productData.brand || "—";
     document.getElementById("productCategory").textContent = productData.category || "—";
-    document.getElementById("productQuantity").textContent = productData.quantity ?? "—";
+    document.getElementById("productQuantity").textContent = productData.quantity != null ? `${productData.quantity} g` : "—";
   } else {
     detailsEl.style.display = "none";
   }
