@@ -19,7 +19,7 @@ export const registerOnChain = async (productId, hash) => {
   try {
     const tx = await contract.registerProduct(productId, hash);
     await tx.wait(); // Wait for tx to be mined
-    console.log(`✅ [Blockchain] Product "${productId}" registered. Tx: ${tx.hash}`);
+  
   } catch (error) {
     // Parse ethers.js revert errors into clean human-readable messages
     let cleanMessage = "Failed to register product on blockchain.";
@@ -46,7 +46,6 @@ export const verifyOnChain = async (productId, hash) => {
   try {
     // verifyProduct is a view function — no tx needed
     const isValid = await contract.verifyProduct(productId, hash);
-    console.log(`🔍 [Blockchain] Verify "${productId}": ${isValid}`);
     return isValid;
   } catch (error) {
     let cleanMessage = "Failed to verify product on blockchain.";
