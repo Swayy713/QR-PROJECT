@@ -13,6 +13,15 @@ export const initDb = () => {
           product_data TEXT NOT NULL, -- Stores JSON string
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
+
+        CREATE TABLE IF NOT EXISTS users (
+          user_id TEXT PRIMARY KEY,
+          username TEXT NOT NULL,
+          fullname TEXT NOT NULL,
+          email TEXT NOT NULL,
+          password TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
       `;
 
       // SQLite allows executing multiple statements if using db.exec synchronously

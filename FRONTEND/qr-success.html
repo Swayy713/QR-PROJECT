@@ -140,7 +140,7 @@
 
     <button class="btn btn-download" id="downloadBtn">Download Secure Tag (QR)</button>
     <button class="btn btn-new" onclick="window.location.href='manufacturer.html'">Register Another Item</button>
-    <button class="btn btn-home" onclick="window.location.href='index.html'">← Back to Portal</button>
+    <button class="btn btn-home" onclick="window.location.href='dashboard.html'">← Back to Dashboard</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
@@ -149,18 +149,47 @@
     const productId = params.get("productId");
 
     if (!productId) {
-        window.location.href = "manufacturer.html";
+        window.location.href = "dashboard.html";
     } else {
         document.getElementById("productIdDisplay").textContent = "ID: " + productId;
 
-        const qr = new QRious({
-            element: document.getElementById("qrCanvas"),
-            value: productId,
-            size: 220,
-            level: "H",
-            background: "white",
-            foreground: "black",
-        });
+        // Fetch product details to embed in QR code
+        fetch("http://localhost:8000/api/all")
+            .then(res => res.json())
+            .then(data => {
+                let qrValue = productId; // fallback
+                if (data.success && data.data) {
+                    const product = data.data.find(p => p.product_id === productId);
+                    if (product) {
+                        qrValue = JSON.stringify({
+                            id: product.product_id,
+                            name: product.product_data.productName,
+                            brand: product.product_data.brand,
+                            category: product.product_data.category
+                        }, null, 2); // pretty format so normal scanners look nice
+                    }
+                }
+
+                new QRious({
+                    element: document.getElementById("qrCanvas"),
+                    value: qrValue,
+                    size: 260,
+                    level: "L", // Low error correction to handle larger string
+                    background: "white",
+                    foreground: "black",
+                });
+            })
+            .catch(() => {
+                // Fallback if fetch fails
+                new QRious({
+                    element: document.getElementById("qrCanvas"),
+                    value: productId,
+                    size: 220,
+                    level: "H",
+                    background: "white",
+                    foreground: "black",
+                });
+            });
 
         document.getElementById("downloadBtn").addEventListener("click", () => {
             const canvas = document.getElementById("qrCanvas");
