@@ -105,8 +105,16 @@ document.getElementById("verifyUploadBtn").addEventListener("click", async () =>
 });
 
 // ─── Verify API Call ──────────────────────────────────────────
-async function verifyProduct(productId) {
+async function verifyProduct(decodedText) {
   setStatus(`Verifying on blockchain... <span class='spinner dark' style='margin-left:8px; width:16px; height:16px; border-width:2px;'></span>`, "#aaa");
+
+  let productId = decodedText.trim();
+  try {
+    const payload = JSON.parse(decodedText);
+    if (payload.id) productId = payload.id;
+  } catch (e) {
+    // If not JSON, assume raw text is ID
+  }
 
   try {
     const res = await fetch(`${API_BASE}/verify`, {
