@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8000/api";
+const API_BASE = "https://qr-project-pq9l.onrender.com/api";
 
 const registerBtn = document.getElementById("registerBtn");
 const messageEl = document.getElementById("message");

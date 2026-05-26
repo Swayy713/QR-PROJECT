@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8000/api";
+const API_BASE = "https://qr-project-pq9l.onrender.com/api";
 const user = JSON.parse(localStorage.getItem("user"));
 
 if (!user) {
